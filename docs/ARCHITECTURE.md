@@ -144,6 +144,10 @@ grant  execute on function public.change_task_status to authenticated;
 
 Подделать историю нельзя: у пользователей нет `insert/update/delete` на `task_status_history`, пишет её только код внутри БД, `changed_by` и `created_at` ставит сервер.
 
+### Удаление (миграция 0007)
+
+ТЗ требует и удаления задач постановщиком, и неудаляемой истории. Поэтому удаление мягкое: `revoke delete` на `tasks`/`objects`, вместо DELETE — RPC `delete_task` (только «Новая») и `delete_object` (только без задач), они ставят `deleted_at`/`deleted_by`. Политики select/update скрывают удалённое, `change_task_status` его не трогает, FK истории — `on delete restrict`.
+
 ## 7. Auth
 
 - Вход: `signInWithPassword`. Открытая регистрация выключена в настройках Auth проекта (и анонимный вход тоже).

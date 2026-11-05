@@ -199,14 +199,26 @@ await check('Постановщик меняет created_at задачи', async
 await check('Постановщик редактирует принятую задачу', async () =>
   denied(await mgr.c.from('tasks').update({ title: 'правка' }).eq('id', accepted.id).select()));
 
-await check('Постановщик удаляет задачу не в статусе «Новая»', async () =>
-  denied(await mgr.c.from('tasks').delete().eq('id', accepted.id).select()));
+await check('Постановщик удаляет задачу прямым DELETE (история ушла бы каскадом)', async () =>
+  denied(await mgr.c.from('tasks').delete().eq('id', ex1New.id).select()));
+
+await check('Постановщик удаляет задачу не в статусе «Новая» (RPC)', async () =>
+  deniedWith(await mgr.c.rpc('delete_task', { p_task_id: accepted.id }), 'только задачу в статусе «Новая»'));
+
+await check('Исполнитель удаляет свою задачу через RPC', async () =>
+  deniedWith(await ex1.c.rpc('delete_task', { p_task_id: ex1New.id }), 'Недостаточно прав'));
 
 await check('Постановщик назначает исполнителем постановщика', async () =>
   denied(await mgr.c.from('tasks').update({ assignee_id: mgr.id }).eq('id', ex1New.id).select()));
 
-await check('Постановщик удаляет объект с задачами', async () =>
+await check('Постановщик удаляет объект прямым DELETE', async () =>
   denied(await mgr.c.from('objects').delete().eq('id', objWithTasks.id).select()));
+
+await check('Постановщик удаляет объект с задачами (RPC)', async () =>
+  deniedWith(await mgr.c.rpc('delete_object', { p_object_id: objWithTasks.id }), 'есть задачи'));
+
+await check('Исполнитель удаляет объект через RPC', async () =>
+  deniedWith(await ex1.c.rpc('delete_object', { p_object_id: objNoEx2.id }), 'Недостаточно прав'));
 
 const anon = newClient();
 for (const table of ['profiles', 'objects', 'tasks', 'task_status_history', 'status_transitions'] as const) {
@@ -214,6 +226,8 @@ for (const table of ['profiles', 'objects', 'tasks', 'task_status_history', 'sta
 }
 await check('Без входа (anon): RPC change_task_status', async () =>
   denied(await anon.rpc('change_task_status', { p_task_id: ex1New.id, p_to: 'in_progress' })));
+await check('Без входа (anon): RPC delete_task', async () =>
+  denied(await anon.rpc('delete_task', { p_task_id: ex1New.id })));
 
 // ---------- вывод ----------
 const w = Math.max(...results.map((r) => r.name.length));

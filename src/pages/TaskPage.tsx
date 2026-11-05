@@ -103,7 +103,7 @@ export function TaskPage() {
       <ConfirmModal
         opened={deleteOpen}
         title="Удалить задачу?"
-        text={`«${t.title}» будет удалена без возможности восстановления.`}
+        text={`«${t.title}» будет удалена из списков. История статусов сохранится в базе.`}
         loading={del.isPending}
         onClose={() => setDeleteOpen(false)}
         onConfirm={() =>

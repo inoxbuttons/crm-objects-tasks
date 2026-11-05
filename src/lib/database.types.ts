@@ -7,19 +7,25 @@ export type Database = {
           Tables: {
             "objects": {
                   Row: {
-                    "address": string,"created_at": string,"created_by": string,"id": string,"name": string
+                    "address": string,"created_at": string,"created_by": string,"deleted_at": string | null,"deleted_by": string | null,"id": string,"name": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "address": string,"created_at"?: string,"created_by"?: string,"id"?: string,"name": string
+                    "address": string,"created_at"?: string,"created_by"?: string,"deleted_at"?: string | null,"deleted_by"?: string | null,"id"?: string,"name": string
                   }
                   Update: {
-                    "address"?: string,"created_at"?: string,"created_by"?: string,"id"?: string,"name"?: string
+                    "address"?: string,"created_at"?: string,"created_by"?: string,"deleted_at"?: string | null,"deleted_by"?: string | null,"id"?: string,"name"?: string
                   }
                   Relationships: [
                     {
       foreignKeyName: "objects_created_by_fkey"
       columns: ["created_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "objects_deleted_by_fkey"
+      columns: ["deleted_by"]
 isOneToOne: false
       referencedRelation: "profiles"
       referencedColumns: ["id"]
@@ -81,14 +87,14 @@ isOneToOne: false
                   ]
                 },"tasks": {
                   Row: {
-                    "assignee_id": string,"author_id": string,"created_at": string,"description": string,"id": string,"object_id": string,"status": Database["public"]['Enums']["task_status"],"title": string,"updated_at": string
+                    "assignee_id": string,"author_id": string,"created_at": string,"deleted_at": string | null,"deleted_by": string | null,"description": string,"id": string,"object_id": string,"status": Database["public"]['Enums']["task_status"],"title": string,"updated_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "assignee_id": string,"author_id"?: string,"created_at"?: string,"description"?: string,"id"?: string,"object_id": string,"status"?: Database["public"]['Enums']["task_status"],"title": string,"updated_at"?: string
+                    "assignee_id": string,"author_id"?: string,"created_at"?: string,"deleted_at"?: string | null,"deleted_by"?: string | null,"description"?: string,"id"?: string,"object_id": string,"status"?: Database["public"]['Enums']["task_status"],"title": string,"updated_at"?: string
                   }
                   Update: {
-                    "assignee_id"?: string,"author_id"?: string,"created_at"?: string,"description"?: string,"id"?: string,"object_id"?: string,"status"?: Database["public"]['Enums']["task_status"],"title"?: string,"updated_at"?: string
+                    "assignee_id"?: string,"author_id"?: string,"created_at"?: string,"deleted_at"?: string | null,"deleted_by"?: string | null,"description"?: string,"id"?: string,"object_id"?: string,"status"?: Database["public"]['Enums']["task_status"],"title"?: string,"updated_at"?: string
                   }
                   Relationships: [
                     {
@@ -100,6 +106,12 @@ isOneToOne: false
     },{
       foreignKeyName: "tasks_author_id_fkey"
       columns: ["author_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "tasks_deleted_by_fkey"
+      columns: ["deleted_by"]
 isOneToOne: false
       referencedRelation: "profiles"
       referencedColumns: ["id"]
@@ -122,6 +134,8 @@ isOneToOne: false
               "assignee_id": string,
 "author_id": string,
 "created_at": string,
+"deleted_at": string | null,
+"deleted_by": string | null,
 "description": string,
 "id": string,
 "object_id": string,
@@ -134,7 +148,13 @@ isOneToOne: false
         to: "tasks"
         isOneToOne: true
         isSetofReturn: false
-      } }
+      } },
+"delete_object":
+{ Args: { "p_object_id": string }; Returns: undefined
+                           },
+"delete_task":
+{ Args: { "p_task_id": string }; Returns: undefined
+                           }
           }
           Enums: {
             "task_status": "new"|"in_progress"|"review"|"accepted"|"rework","transition_actor": "manager"|"assignee","user_role": "manager"|"executor"

@@ -48,7 +48,8 @@ export function useDeleteObject() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from('objects').delete().eq('id', id);
+      // Мягкое удаление в БД; прямой DELETE через API запрещён
+      const { error } = await supabase.rpc('delete_object', { p_object_id: id });
       if (error) throw error;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ['objects'] }),

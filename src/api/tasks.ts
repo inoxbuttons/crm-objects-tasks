@@ -77,9 +77,9 @@ export function useDeleteTask() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (id: string) => {
-      const { data, error } = await supabase.from('tasks').delete().eq('id', id).select('id');
+      // Мягкое удаление: задача скрывается, история статусов остаётся в БД
+      const { error } = await supabase.rpc('delete_task', { p_task_id: id });
       if (error) throw error;
-      if (!data.length) throw new Error('Удалить можно только задачу в статусе «Новая»');
     },
     onSuccess: () => invalidateTasks(qc),
   });
