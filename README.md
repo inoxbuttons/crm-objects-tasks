@@ -2,6 +2,8 @@
 
 Тестовое задание: постановщик ставит задачи по объектам (стройкам), исполнители берут их в работу и отправляют на проверку. Все права доступа и правила смены статусов проверяются в базе данных (Postgres в Supabase), а не только в интерфейсе.
 
+**Приложение:** https://inoxbuttons.github.io/crm-objects-tasks/
+
 - Архитектура: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
 - Объяснение для руководителя: [docs/EXPLANATION.md](docs/EXPLANATION.md)
 - Решения и допущения: [docs/DECISIONS.md](docs/DECISIONS.md)
@@ -42,6 +44,12 @@ npm run dev                  # http://localhost:5173
 | `SUPABASE_DB_URL` | `db:push` / `db:types` — строка подключения (Session pooler) в одинарных кавычках |
 
 В настройках Supabase Auth должны быть выключены регистрация новых пользователей и анонимный вход.
+
+## Деплой (GitHub Pages)
+
+Workflow `.github/workflows/deploy.yml` собирает сайт при каждом push в `main`.
+Публичные `VITE_SUPABASE_URL` и `VITE_SUPABASE_PUBLISHABLE_KEY` берутся из Settings → Secrets and variables → Actions → **Variables**.
+Сайт живёт в подпапке `/<repo>/` (`BASE_PATH` при сборке), а прямые ссылки вида `/tasks/…` работают через копию `index.html` в `404.html`.
 
 ## Команды
 

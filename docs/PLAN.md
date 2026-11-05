@@ -8,7 +8,7 @@
 - [x] Создать проект в Supabase (free tier), регион поближе.
 - [ ] В настройках Auth выключить регистрацию новых пользователей и анонимный вход; подтверждение email не нужно (пользователей создаёт админ-скрипт).  ⚠️ анонимный вход выключен, **регистрация ещё включена**
 - [x] Создать новые API-ключи (publishable + secret), если проект ещё на legacy anon/service_role.
-- [ ] Создать пустой репозиторий на GitHub.
+- [x] Создать пустой репозиторий на GitHub.
 - [x] Заполнить `.env.local`: `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY` (без `VITE_`!).
 - [ ] Написать в чат hh, когда начинаете и когда планируете сдать (это требование ТЗ). Заодно отправить вопросы из конца файла.
 
@@ -76,7 +76,7 @@
 - [x] `MyTasksPage`: задачи `assignee_id = me`, группы по статусу (сначала «На доработке» и «Новая»), ссылка на объект и задачу.
 
 ## Фаза 11. Деплой (~10 мин)
-- [ ] Vercel: импорт репо, env `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`.
+- [x] Деплой на **GitHub Pages** вместо Vercel: workflow `.github/workflows/deploy.yml`, переменные репозитория `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`.
 - [ ] В Supabase Auth добавить URL сайта.
 - [ ] Проверить вход под всеми тремя пользователями на проде.
 - [ ] Проверить, что secret key нет в бандле: `grep -r "sb_secret" dist/` → пусто. (подстрока есть в самой supabase-js — используем `npm run check:bundle`, он ищет значение ключа)

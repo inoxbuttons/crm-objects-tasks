@@ -25,4 +25,7 @@ export const router = createBrowserRouter([
     ],
   },
   { path: '*', element: <Navigate to="/" replace /> },
-]);
+], {
+  // на GitHub Pages приложение живёт в подпапке /<repo>/
+  basename: import.meta.env.BASE_URL.replace(/\/$/, '') || '/',
+});
