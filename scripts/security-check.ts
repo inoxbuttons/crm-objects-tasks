@@ -107,6 +107,27 @@ await check('Исполнитель видит только свои задач�
   return [foreign === 0 && data.length > 0, `своих ${data.length}, чужих ${foreign}`];
 });
 
+await check('Исполнитель тянет чужие задачи через вложенный запрос objects→tasks', async () => {
+  const { data, error } = await ex1.c.from('objects').select('id, tasks(assignee_id)');
+  if (error) return [true, error.message];
+  const foreign = data.flatMap((o) => o.tasks).filter((t) => t.assignee_id !== ex1.id).length;
+  return [foreign === 0, `объектов ${data.length}, чужих задач во вложении ${foreign}`];
+});
+
+await check('Исполнитель видит историю только своих задач (список)', async () => {
+  const [{ data: h, error }, { data: own }] = await Promise.all([
+    ex1.c.from('task_status_history').select('task_id'),
+    ex1.c.from('tasks').select('id'),
+  ]);
+  if (error || !h || !own) return [false, error?.message ?? 'нет данных'];
+  const ids = new Set(own.map((t) => t.id));
+  const foreign = h.filter((r) => !ids.has(r.task_id)).length;
+  return [foreign === 0, `записей ${h.length}, чужих ${foreign}`];
+});
+
+await check('Служебные функции схемы private недоступны через API', async () =>
+  denied(await ex1.c.rpc('is_manager' as never)));
+
 await check('Исполнитель меняет статус прямым UPDATE', async () =>
   denied(await ex1.c.from('tasks').update({ status: 'accepted' } as never).eq('id', ex1Any.id).select()));
 

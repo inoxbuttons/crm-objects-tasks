@@ -63,11 +63,14 @@ export function ObjectsPage() {
                           ✎
                         </ActionIcon>
                       </Tooltip>
-                      <Tooltip label="Удалить">
-                        <ActionIcon variant="subtle" color="red" onClick={() => setDeleting(o)} aria-label="Удалить">
-                          ✕
-                        </ActionIcon>
-                      </Tooltip>
+                      {/* ТЗ: показываем только доступные действия. Объект с задачами БД удалить не даст */}
+                      {o.taskCount === 0 && (
+                        <Tooltip label="Удалить">
+                          <ActionIcon variant="subtle" color="red" onClick={() => setDeleting(o)} aria-label="Удалить">
+                            ✕
+                          </ActionIcon>
+                        </Tooltip>
+                      )}
                     </Group>
                   </Table.Td>
                 )}
@@ -81,7 +84,7 @@ export function ObjectsPage() {
       <ConfirmModal
         opened={!!deleting}
         title="Удалить объект?"
-        text={`«${deleting?.name}» будет удалён. Объект с задачами удалить нельзя.`}
+        text={`«${deleting?.name}» будет удалён.`}
         loading={del.isPending}
         onClose={() => setDeleting(null)}
         onConfirm={() =>

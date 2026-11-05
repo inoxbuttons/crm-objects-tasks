@@ -59,7 +59,7 @@ Workflow `.github/workflows/deploy.yml` собирает сайт при каж�
 | `npm run db:push` | применить новые миграции |
 | `npm run db:types` | сгенерировать `src/lib/database.types.ts` |
 | `npm run seed` | тестовые данные; статусы проводятся через ту же RPC от имени пользователей, поэтому история честная |
-| `npm run security-check` | ~40 «атак» в обход интерфейса с publishable key; печатает таблицу PASS/FAIL |
+| `npm run security-check` | 42 «атаки» в обход интерфейса с publishable key; печатает таблицу PASS/FAIL |
 | `npm run check:bundle` | убедиться, что secret key не попал в `dist/` |
 
 ## Как устроена защита (коротко)
